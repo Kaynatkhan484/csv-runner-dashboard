@@ -63,7 +63,7 @@ date,person,miles
 2025-11-04,Ali,6.1
 2025-11-04,Sara,4.7
 
-Project Structure
+Project Structure:
 csv-runner-dashboard/
 ├─ app/
 │  ├─ page.js       # Main dashboard page
@@ -73,7 +73,7 @@ csv-runner-dashboard/
 ├─ tailwind.config.js
 └─ ...
 
-Architecture Notes
+Architecture Notes:
 UploadBox.jsx handles file upload, CSV parsing using PapaParse, and validation.
 page.js stores CSV data in state, calculates metrics, and renders charts dynamically.
 Charts use Recharts and are responsive to CSV data changes.
