@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+CSV Runner Dashboard
+Overview:
 
-## Getting Started
+The CSV Runner Dashboard is a Next.js web application that allows users to upload a CSV file containing running data (date, person, miles). The dashboard parses the CSV, validates the data, calculates metrics, and displays them with interactive charts for better visualization.
+It is designed using Next.js, React, Tailwind CSS, shadcn/ui components, and Recharts for charts.
 
-First, run the development server:
+Features:
+Upload CSV files with headers: date, person, miles
+Automatic validation of CSV headers and data types
+Calculation of overall metrics: Min, Max, Avg Miles
+Grouped metrics per person
 
-```bash
+Interactive charts:
+*Line Chart – Miles trend over time
+*Bar Chart – Total miles per person
+*Pie Chart – Miles distribution per person
+User-friendly error messages for invalid CSVs
+Responsive UI with modern styling
+
+Assumptions:
+CSV headers must exactly match: date, person, miles
+miles must be a numeric value
+Empty rows or invalid data will show error messages
+
+Prerequisites:
+Node.js v18+
+npm v9+ (or yarn)
+
+Setup & Installation:
+1)Clone the repository
+git clone <your-repo-url>
+cd csv-runner-dashboard
+
+2)Install dependencies
+npm install
+
+3)Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open your browser at http://localhost:3000
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Usage:
+Click Upload CSV File.
+Drag and drop your CSV or browse to select it.
+Once uploaded, metrics and charts will appear.
+Metrics include Overall Min, Max, Avg miles.
+Charts include Line Chart (trend), Bar Chart (total per person), Pie Chart (distribution).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Sample CSV:
+Save this as sample.csv:
 
-## Learn More
+date,person,miles
+2025-11-01,Kaynat,3.5
+2025-11-01,Ali,5.2
+2025-11-01,Sara,4.0
+2025-11-02,Kaynat,4.2
+2025-11-02,Ali,3.8
+2025-11-02,Sara,5.5
+2025-11-03,Kaynat,6.0
+2025-11-03,Ali,4.5
+2025-11-03,Sara,3.9
+2025-11-04,Kaynat,5.2
+2025-11-04,Ali,6.1
+2025-11-04,Sara,4.7
 
-To learn more about Next.js, take a look at the following resources:
+Project Structure
+csv-runner-dashboard/
+├─ app/
+│  ├─ page.js       # Main dashboard page
+├─ components/
+│  ├─ UploadBox.jsx # CSV upload and parsing component
+├─ package.json
+├─ tailwind.config.js
+└─ ...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Architecture Notes
+UploadBox.jsx handles file upload, CSV parsing using PapaParse, and validation.
+page.js stores CSV data in state, calculates metrics, and renders charts dynamically.
+Charts use Recharts and are responsive to CSV data changes.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Responsive layo
