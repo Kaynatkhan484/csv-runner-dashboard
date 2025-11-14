@@ -77,5 +77,10 @@ Architecture Notes
 UploadBox.jsx handles file upload, CSV parsing using PapaParse, and validation.
 page.js stores CSV data in state, calculates metrics, and renders charts dynamically.
 Charts use Recharts and are responsive to CSV data changes.
+Styling uses Tailwind CSS and shadcn/ui for modern card layouts.
 
-Responsive layo
+Accessibility & UI:
+Proper labels and color contrasts
+Loading and error states
+Responsive layout for mobile and desktop
+
