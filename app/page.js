@@ -1,65 +1,119 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import UploadBox from "../components/UploadBox";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid,
+  BarChart, Bar, PieChart, Pie, Cell,
+} from "recharts";
 
 export default function Home() {
+  const [csvData, setCsvData] = useState([]);
+  const [metrics, setMetrics] = useState({ min: 0, max: 0, avg: 0, totalPerPerson: {} });
+
+  const COLORS = ["#00fff7", "#ff4d4d", "#ffaa00", "#9b59b6"];
+
+  useEffect(() => {
+    if (!csvData.length) return;
+
+    const milesArray = csvData.map(d => d.miles);
+    const min = Math.min(...milesArray);
+    const max = Math.max(...milesArray);
+    const avg = (milesArray.reduce((a, b) => a + b, 0) / milesArray.length).toFixed(2);
+
+    const totalPerPerson = {};
+    csvData.forEach(d => {
+      if (!totalPerPerson[d.person]) totalPerPerson[d.person] = 0;
+      totalPerPerson[d.person] += d.miles;
+    });
+
+    setMetrics({ min, max, avg, totalPerPerson });
+  }, [csvData]);
+
+  // Transform data for line chart
+  const lineData = [];
+  const datesMap = {};
+  csvData.forEach(d => {
+    if (!datesMap[d.date]) {
+      datesMap[d.date] = { date: d.date };
+      lineData.push(datesMap[d.date]);
+    }
+    datesMap[d.date][d.person] = d.miles;
+  });
+
+  const pieData = Object.entries(metrics.totalPerPerson).map(([person, miles]) => ({ name: person, value: miles }));
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="min-h-screen p-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <h1 className="text-4xl font-bold mb-6">CSV Runner Dashboard</h1>
+
+      <UploadBox onUpload={setCsvData} />
+
+      {csvData.length === 0 && <p className="text-gray-400 mt-4">Upload a CSV to see metrics and charts.</p>}
+
+      {csvData.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            <div className="glass-card p-4">
+              <h2 className="text-xl font-semibold">Overall Min Miles</h2>
+              <p className="text-2xl">{metrics.min}</p>
+            </div>
+            <div className="glass-card p-4">
+              <h2 className="text-xl font-semibold">Overall Max Miles</h2>
+              <p className="text-2xl">{metrics.max}</p>
+            </div>
+            <div className="glass-card p-4">
+              <h2 className="text-xl font-semibold">Overall Avg Miles</h2>
+              <p className="text-2xl">{metrics.avg}</p>
+            </div>
+          </div>
+
+          {/* Line Chart */}
+          <div className="glass-card mb-8 p-4">
+            <h2 className="text-xl font-semibold mb-4">Overall Miles Trend</h2>
+            <LineChart width={700} height={300} data={lineData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" stroke="#00fff7" />
+              <YAxis stroke="#00fff7" />
+              <Tooltip />
+              <Legend />
+              {Object.keys(metrics.totalPerPerson).map((person, idx) => (
+                <Line key={person} type="monotone" dataKey={person} name={person} stroke={COLORS[idx % COLORS.length]} strokeWidth={2} connectNulls />
+              ))}
+            </LineChart>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="glass-card mb-8 p-4">
+            <h2 className="text-xl font-semibold mb-4">Total Miles Per Person</h2>
+            <BarChart width={700} height={300} data={pieData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" stroke="#00fff7" />
+              <YAxis stroke="#00fff7" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="value" fill="#00fff7">
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </div>
+
+          {/* Pie Chart */}
+          <div className="glass-card mb-8 p-4">
+            <h2 className="text-xl font-semibold mb-4">Miles Distribution</h2>
+            <PieChart width={400} height={300}>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#00fff7" label>
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </div>
+        </>
+      )}
     </div>
   );
 }
