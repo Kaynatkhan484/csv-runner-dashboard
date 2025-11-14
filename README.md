@@ -5,12 +5,14 @@ The CSV Runner Dashboard is a Next.js web application that allows users to uploa
 It is designed using Next.js, React, Tailwind CSS, shadcn/ui components, and Recharts for charts.
 
 Features:
+
 Upload CSV files with headers: date, person, miles
 Automatic validation of CSV headers and data types
 Calculation of overall metrics: Min, Max, Avg Miles
 Grouped metrics per person
 
 Interactive charts:
+
 *Line Chart – Miles trend over time
 *Bar Chart – Total miles per person
 *Pie Chart – Miles distribution per person
@@ -18,15 +20,18 @@ User-friendly error messages for invalid CSVs
 Responsive UI with modern styling
 
 Assumptions:
+
 CSV headers must exactly match: date, person, miles
 miles must be a numeric value
 Empty rows or invalid data will show error messages
 
 Prerequisites:
+
 Node.js v18+
 npm v9+ (or yarn)
 
 Setup & Installation:
+
 1)Clone the repository
 git clone <your-repo-url>
 cd csv-runner-dashboard
@@ -40,6 +45,7 @@ npm run dev
 Open your browser at http://localhost:3000
 
 Usage:
+
 Click Upload CSV File.
 Drag and drop your CSV or browse to select it.
 Once uploaded, metrics and charts will appear.
@@ -64,6 +70,7 @@ date,person,miles
 2025-11-04,Sara,4.7
 
 Project Structure:
+
 csv-runner-dashboard/
 ├─ app/
 │  ├─ page.js       # Main dashboard page
@@ -74,12 +81,14 @@ csv-runner-dashboard/
 └─ ...
 
 Architecture Notes:
+
 UploadBox.jsx handles file upload, CSV parsing using PapaParse, and validation.
 page.js stores CSV data in state, calculates metrics, and renders charts dynamically.
 Charts use Recharts and are responsive to CSV data changes.
 Styling uses Tailwind CSS and shadcn/ui for modern card layouts.
 
 Accessibility & UI:
+
 Proper labels and color contrasts
 Loading and error states
 Responsive layout for mobile and desktop
